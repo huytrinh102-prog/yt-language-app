@@ -1,0 +1,4 @@
+node_modules
+.env
+jwt.sql
+.DS_Store

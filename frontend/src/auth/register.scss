@@ -1,0 +1,26 @@
+@use "./login.scss";
+
+.Register-left-wrap {
+  width: 100%;
+  max-width: 460px;
+
+  > .brand {
+    margin-bottom: 18px;
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 900;
+  }
+}
+
+.Register-left-content {
+  .form-group {
+    display: grid;
+    gap: 7px;
+  }
+
+  label {
+    color: var(--text-h);
+    font-size: 14px;
+    font-weight: 800;
+  }
+}
