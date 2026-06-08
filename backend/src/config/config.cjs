@@ -1,5 +1,9 @@
 require("dotenv").config();
 
+const useDatabaseSsl =
+  String(process.env.DB_SSL || "").toLowerCase() === "true" ||
+  String(process.env.MYSQL_SSL || "").toLowerCase() === "true";
+
 const baseConfig = {
   dialect: "mysql",
   logging: false,
@@ -12,6 +16,16 @@ const baseConfig = {
   },
   dialectOptions: {
     charset: "utf8mb4",
+    ...(useDatabaseSsl
+      ? {
+          ssl: {
+            minVersion: "TLSv1.2",
+            rejectUnauthorized:
+              String(process.env.DB_SSL_REJECT_UNAUTHORIZED || "true")
+                .toLowerCase() !== "false",
+          },
+        }
+      : {}),
   },
 };
 
