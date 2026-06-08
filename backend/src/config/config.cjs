@@ -24,6 +24,7 @@ const fromEnv = {
 };
 
 const shouldUseDatabaseUrl =
+  Boolean(process.env.DATABASE_URL || process.env.MYSQL_URL) ||
   process.env.NODE_ENV === "production" ||
   String(process.env.USE_DATABASE_URL || "").toLowerCase() === "true";
 
@@ -35,10 +36,22 @@ const databaseUrlEnv = shouldUseDatabaseUrl
       : null
   : null;
 
-const withUrlFallback = (config) => ({
-  ...(databaseUrlEnv ? { use_env_variable: databaseUrlEnv } : config),
-  ...baseConfig,
-});
+const withUrlFallback = (config) => {
+  if (databaseUrlEnv) {
+    return { use_env_variable: databaseUrlEnv, ...baseConfig };
+  }
+
+  if (process.env.NODE_ENV === "production" && !config.host) {
+    throw new Error(
+      "Missing production database config. Set DATABASE_URL or MYSQLHOST/MYSQLUSER/MYSQLPASSWORD/MYSQLDATABASE on Render.",
+    );
+  }
+
+  return {
+    ...config,
+    ...baseConfig,
+  };
+};
 
 module.exports = {
   development: withUrlFallback({
