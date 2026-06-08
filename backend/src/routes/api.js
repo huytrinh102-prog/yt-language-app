@@ -24,6 +24,7 @@ const initApiRoutes = (app) => {
   // CHECK TOKEN
   router.use(checkToken);
   router.get("/account", userController.getAccountData);
+  router.put("/profile", userController.updateProfile);
   router.post("/cloudinary/sign-avatar", userController.userAvatar);
 
   // user language folders

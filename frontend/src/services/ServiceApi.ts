@@ -7,6 +7,7 @@ import type {
   UsersListData,
   Group,
   UserFormData,
+  ProfilePayload,
   LoginResponseData,
   LoginPayload,
   RegisterPayload,
@@ -173,6 +174,10 @@ const uploadToCloudinary = async (
 
 const GetAccount = () => {
   return apiGet<AuthUser>("api/v1/account");
+};
+
+const UpdateProfile = (data: ProfilePayload) => {
+  return apiPut<AuthUser, ProfilePayload>("api/v1/profile", data);
 };
 
 // language
@@ -380,6 +385,7 @@ export {
   UpdateVideoProgress,
   LoginbyGoogle,
   GetAccount,
+  UpdateProfile,
   GetGroupsRoles,
   UpdateRolesbyGroup,
   GetRolesbyGroup,

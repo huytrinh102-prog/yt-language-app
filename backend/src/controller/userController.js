@@ -120,20 +120,12 @@ const getGroups = async (req, res) => {
 };
 const getAccountData = async (req, res) => {
   try {
-    let data = req.user;
-    if (data) {
-      return res.status(200).json({
-        EM: "get Account Data succedds",
-        EC: 0,
-        DT: data,
-      });
-    } else {
-      return res.status(500).json({
-        EM: "Error from sever",
-        EC: "-1",
-        DT: "",
-      });
-    }
+    const data = await userApiService.getAccountProfile(req.user.id);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -143,6 +135,25 @@ const getAccountData = async (req, res) => {
     });
   }
 };
+
+const updateProfile = async (req, res) => {
+  try {
+    const data = await userApiService.updateProfile(req.body, req.user.id);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Error from sever",
+      EC: "-1",
+      DT: "",
+    });
+  }
+};
+
 const userAvatar = async (req, res) => {
   try {
     const folder = "avatars";
@@ -181,5 +192,6 @@ export default {
   creatUser,
   getGroups,
   getAccountData,
+  updateProfile,
   userAvatar,
 };

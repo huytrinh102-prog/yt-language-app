@@ -3,6 +3,82 @@ import bcrypt from "bcrypt";
 const saltRounds = 10;
 import { Op, where } from "sequelize";
 import cloudinary from "../config/cloudinary.js";
+
+const buildAccountData = async (userId) => {
+  const user = await db.User.findOne({
+    where: { id: userId },
+    attributes: [
+      "id",
+      "email",
+      "username",
+      "phone",
+      "sex",
+      "avatarUrl",
+      "avatarPublicId",
+    ],
+    include: [
+      {
+        association: db.User.associations.Group,
+        attributes: ["id", "name", "description"],
+        include: [
+          {
+            association: db.Group.associations.roles,
+            attributes: ["id", "url", "description"],
+            through: { attributes: [] },
+          },
+        ],
+      },
+    ],
+  });
+
+  if (!user) return null;
+
+  const plainUser = user.get({ plain: true });
+  const roles =
+    plainUser.Group?.roles?.map((role) => ({
+      id: role.id,
+      url: role.url,
+    })) || [];
+  const groupname = plainUser.Group?.name;
+  const isAdmin =
+    String(groupname || "").toLowerCase() === "admin" ||
+    plainUser.email === "admin@gmail.com";
+
+  return {
+    ...plainUser,
+    groupname,
+    roles,
+    isAdmin,
+  };
+};
+
+const getAccountProfile = async (userId) => {
+  try {
+    const user = await buildAccountData(userId);
+
+    if (!user) {
+      return {
+        EM: "User not found",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    return {
+      EM: "get Account Data succedds",
+      EC: 0,
+      DT: user,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Error from server...",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
+
 const read = async (page, limit, search, sort) => {
   try {
     // /condition
@@ -256,6 +332,80 @@ const update = async (data, id) => {
     };
   }
 };
+
+const updateProfile = async (data, userId) => {
+  try {
+    const { username, phone, sex } = data;
+
+    if (!phone || String(phone).length < 8) {
+      return {
+        EM: "Your phone number must have at least 8 digits",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    const user = await db.User.findOne({ where: { id: userId } });
+    if (!user) {
+      return {
+        EM: "User not found",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    const isExistPhone = await db.User.findOne({
+      where: {
+        phone,
+        id: { [Op.ne]: userId },
+      },
+    });
+
+    if (isExistPhone) {
+      return {
+        EM: "the phone number already exists",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    if (
+      data.avatarPublicId &&
+      user.avatarPublicId &&
+      data.avatarPublicId !== user.avatarPublicId
+    ) {
+      await cloudinary.uploader.destroy(user.avatarPublicId);
+    }
+
+    const updateData = {
+      username,
+      phone,
+      sex,
+    };
+
+    if (data.avatarUrl) {
+      updateData.avatarUrl = data.avatarUrl;
+    }
+
+    if (data.avatarPublicId) {
+      updateData.avatarPublicId = data.avatarPublicId;
+    }
+
+    await user.update(updateData);
+
+    const updatedUser = await buildAccountData(userId);
+
+    return { EM: "update profile success", EC: 0, DT: updatedUser };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Error from server...",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
+
 const getGroups = async () => {
   try {
     const data = await db.Group.findAll({
@@ -275,4 +425,12 @@ const getGroups = async () => {
   }
 };
 
-export { read, remove, create, update, getGroups };
+export {
+  read,
+  remove,
+  create,
+  update,
+  updateProfile,
+  getAccountProfile,
+  getGroups,
+};

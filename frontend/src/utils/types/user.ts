@@ -33,6 +33,14 @@ export type UserFormData = {
   avatarPublicId?: string;
 };
 
+export type ProfilePayload = {
+  username: string;
+  phone: string;
+  sex: string;
+  avatarUrl?: string;
+  avatarPublicId?: string;
+};
+
 export type UserItem = Omit<UserFormData, "password"> & {
   id: number;
   Group?: Group;

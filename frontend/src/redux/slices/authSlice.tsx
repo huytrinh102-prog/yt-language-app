@@ -5,6 +5,10 @@ export type AuthUser = {
   id?: number;
   email?: string;
   username: string;
+  phone?: string;
+  sex?: string;
+  avatarUrl?: string;
+  avatarPublicId?: string;
   groupname?: string;
   Group?: {
     id?: number;

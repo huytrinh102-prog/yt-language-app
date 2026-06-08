@@ -12,6 +12,7 @@ import LanguageLibrary from "../../component/videos/LanguageLibrary";
 import Videos from "../../component/videos/Videos";
 import Notes from "../../component/notes/Notes";
 import Vocabulary from "../../component/vocabulary/Vocabulary";
+import Profile from "../../component/profile/Profile";
 import ProtectedRoute from "./ProtectedRoute";
 import ForgotPassword from "../../auth/resetPassword/ForgotPassword";
 import ResetPassword from "../../auth/resetPassword/ResetPassword";
@@ -61,6 +62,14 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <Vocabulary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
