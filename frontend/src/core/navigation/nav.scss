@@ -1,0 +1,112 @@
+.custom-nav {
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--nav-bg);
+  box-shadow: none;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  .container {
+    width: min(100% - 32px, 1280px);
+    max-width: 1280px !important;
+  }
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-h) !important;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+
+.brand-icon {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.custom-nav .navbar-toggler {
+  border-color: var(--border);
+  border-radius: 8px;
+}
+
+.custom-nav .navbar-collapse {
+  gap: 18px;
+}
+
+.custom-nav .nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 7px 12px !important;
+  border-radius: 8px;
+  color: var(--nav-link) !important;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.custom-nav .nav-link:hover {
+  background: var(--nav-hover);
+  color: var(--text-h) !important;
+}
+
+.custom-nav .nav-link.active {
+  background: var(--accent-bg);
+  color: var(--accent) !important;
+}
+
+.theme-toggle,
+.account-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: var(--surface) !important;
+  color: var(--text-h) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.account-toggle::after {
+  margin-left: 2px;
+}
+
+@media (max-width: 992px) {
+  .custom-nav .navbar-collapse {
+    padding-top: 12px;
+  }
+
+  .custom-nav .nav {
+    align-items: stretch !important;
+    gap: 4px !important;
+    margin: 0 !important;
+  }
+
+  .custom-nav .nav-link {
+    width: 100%;
+  }
+
+  .custom-nav .d-flex {
+    align-items: stretch !important;
+    flex-direction: column;
+    gap: 8px !important;
+    padding-top: 10px;
+  }
+}
