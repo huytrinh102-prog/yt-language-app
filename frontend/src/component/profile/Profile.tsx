@@ -12,7 +12,7 @@ import {
 } from "../../services/ServiceApi";
 import type { ProfilePayload } from "../../utils/types/user";
 
-const defaultForm: ProfilePayload = {
+const emptyProfile: ProfilePayload = {
   username: "",
   phone: "",
   sex: "MALE",
@@ -23,39 +23,36 @@ const defaultForm: ProfilePayload = {
 const Profile = () => {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
-  const [form, setForm] = useState<ProfilePayload>(defaultForm);
-  const [preview, setPreview] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [form, setForm] = useState<ProfilePayload>(emptyProfile);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!user) return;
 
     const nextForm = {
-      username: String(user.username || ""),
-      phone: String(user.phone || ""),
-      sex: String(user.sex || "MALE"),
-      avatarUrl: String(user.avatarUrl || ""),
-      avatarPublicId: String(user.avatarPublicId || ""),
+      username: user.username || "",
+      phone: user.phone || "",
+      sex: user.sex || "MALE",
+      avatarUrl: user.avatarUrl || "",
+      avatarPublicId: user.avatarPublicId || "",
     };
 
     setForm(nextForm);
-    setPreview(nextForm.avatarUrl || "");
-    setSelectedFile(null);
+    setAvatarPreview(nextForm.avatarUrl);
+    setAvatarFile(null);
   }, [user]);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
@@ -63,12 +60,12 @@ const Profile = () => {
       return;
     }
 
-    setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     if (!form.username.trim()) {
       toast.error("Username is required");
@@ -89,9 +86,9 @@ const Profile = () => {
         phone: form.phone.trim(),
       };
 
-      if (selectedFile) {
-        const signature = await GetSignAvatar();
-        const uploaded = await uploadToCloudinary(signature.DT, selectedFile);
+      if (avatarFile) {
+        const signRes = await GetSignAvatar();
+        const uploaded = await uploadToCloudinary(signRes.DT, avatarFile);
 
         payload = {
           ...payload,
@@ -110,7 +107,7 @@ const Profile = () => {
             access_token: localStorage.getItem("access_token") || "",
           }),
         );
-        setSelectedFile(null);
+        setAvatarFile(null);
       } else {
         toast.error(res?.EM || "Update profile failed");
       }
@@ -124,16 +121,17 @@ const Profile = () => {
 
   return (
     <main className="profile-page">
-      <section className="profile-shell">
-        <div className="profile-summary">
+      <section className="profile-card">
+        <div className="profile-header">
           <div className="profile-avatar">
-            {preview ? (
-              <img src={preview} alt="Profile avatar" />
+            {avatarPreview ? (
+              <img src={avatarPreview} alt="Profile avatar" />
             ) : (
               <FaUserCircle />
             )}
           </div>
-          <div>
+
+          <div className="profile-title">
             <h1>Profile</h1>
             <p>{user?.email}</p>
           </div>
@@ -141,7 +139,7 @@ const Profile = () => {
 
         <form className="profile-form" onSubmit={handleSubmit}>
           <div className="profile-upload">
-            <label className="avatar-upload-btn" htmlFor="profile-avatar">
+            <label htmlFor="profile-avatar" className="profile-upload-button">
               <FaCamera />
               <span>Change avatar</span>
             </label>
@@ -153,8 +151,8 @@ const Profile = () => {
             />
           </div>
 
-          <div className="row g-3">
-            <div className="col-12 col-md-6">
+          <div className="profile-grid">
+            <div className="profile-field">
               <label className="form-label">Username</label>
               <input
                 className="form-control"
@@ -165,7 +163,7 @@ const Profile = () => {
               />
             </div>
 
-            <div className="col-12 col-md-6">
+            <div className="profile-field">
               <label className="form-label">Phone</label>
               <input
                 className="form-control"
@@ -176,7 +174,7 @@ const Profile = () => {
               />
             </div>
 
-            <div className="col-12 col-md-6">
+            <div className="profile-field">
               <label className="form-label">Gender</label>
               <select
                 className="form-select"
@@ -190,11 +188,11 @@ const Profile = () => {
               </select>
             </div>
 
-            <div className="col-12 col-md-6">
+            <div className="profile-field">
               <label className="form-label">Email</label>
               <input
                 className="form-control"
-                value={String(user?.email || "")}
+                value={user?.email || ""}
                 disabled
               />
             </div>
