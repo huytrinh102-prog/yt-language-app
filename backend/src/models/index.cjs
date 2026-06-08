@@ -11,7 +11,23 @@ const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  const normalizeDatabaseUrl = (value) => {
+    if (!value) return value;
+
+    try {
+      const url = new URL(value);
+      url.searchParams.delete("ssl-mode");
+      url.searchParams.delete("sslmode");
+      return url.toString();
+    } catch {
+      return value;
+    }
+  };
+
+  sequelize = new Sequelize(
+    normalizeDatabaseUrl(process.env[config.use_env_variable]),
+    config,
+  );
 } else {
   sequelize = new Sequelize(
     config.database,
