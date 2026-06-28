@@ -3,7 +3,10 @@ import { toast } from "react-toastify";
 import type { ApiResponse } from "./types/api";
 
 let isRedirectingToLogin = false;
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8082/";
+const productionApiUrl = "https://yt-language-backend.onrender.com/";
+const localApiUrl = import.meta.env.VITE_API_URL || "http://localhost:8082/";
+const baseURL =
+  window.location.hostname === "localhost" ? localApiUrl : productionApiUrl;
 
 const getServerMessage = (data: unknown) => {
   if (!data || typeof data !== "object") return "";
