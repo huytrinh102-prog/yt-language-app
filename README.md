@@ -126,7 +126,7 @@ MYSQLDATABASE=yt_language_app
 jwtKey=your_jwt_secret
 jwtRefreshKey=your_refresh_secret
 
-GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_ID=813168831010-6khcpkn2emjejlmrujadsdm8vhi33fur.apps.googleusercontent.com
 
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
@@ -149,7 +149,7 @@ CORS_ORIGINS=http://localhost:5174
 
 ```env
 VITE_API_URL=http://localhost:8080/
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
+VITE_GOOGLE_CLIENT_ID=813168831010-6khcpkn2emjejlmrujadsdm8vhi33fur.apps.googleusercontent.com
 ```
 
 ## 工夫した点

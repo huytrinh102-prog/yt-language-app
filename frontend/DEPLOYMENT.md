@@ -31,7 +31,7 @@ DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/DATABASE
 jwtKey=your_access_token_secret
 jwtRefreshKey=your_refresh_token_secret
 
-GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_ID=813168831010-6khcpkn2emjejlmrujadsdm8vhi33fur.apps.googleusercontent.com
 
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
@@ -90,7 +90,7 @@ Add environment variables on Vercel:
 
 ```env
 VITE_API_URL=https://your-backend.onrender.com/
-VITE_GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+VITE_GOOGLE_CLIENT_ID=813168831010-6khcpkn2emjejlmrujadsdm8vhi33fur.apps.googleusercontent.com
 ```
 
 Deploy.
